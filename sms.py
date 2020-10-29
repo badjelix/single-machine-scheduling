@@ -57,9 +57,7 @@ for i in range(1,nt+1):
             getvar[lit] = ('k',i,j,t)
             lit += 1
 
-print('getlit: ')
-print(getlit)
-print('getvar: ')
+print('mapa:')
 print(getvar)
 
 
@@ -83,20 +81,15 @@ for i in range(1, nt+1):
 
 # A task is completed if its last fragment is completed
 # K(i, nk[i], t) => T(i),   where, forall (i, t)
+# WARNING minimum release optimization
 for i in range(1, nt+1):
-    #hardclauses.append([,])
-    pass
-
-# k must be processed in order
-# TODO optimize redundant clauses
-for i in range(1, nt+1):
-    for j in range(2, nk[i]+1):
-        for t in range(r[i], d[i]):
-            cl = [-1 * getlit[('k',i,j,t)]]
-            for x in range(r[i], t):
-                cl.append(getlit[('k',i,j-1,x)])
-
-            hardclauses.append(cl)
+    minimumrelease = 0
+    for j in range(1, nk[i]):
+        minimumrelease += k[i][j]
+    for t in range(r[i]+minimumrelease, d[i]):
+        cl = [ -1 * getlit[('k',i,nk[i],t)], getlit[('t',i)] ]
+        print(cl)
+        hardclauses.append(cl)
 
 
 ################
