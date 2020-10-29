@@ -81,15 +81,16 @@ for i in range(1, nt+1):
 
 # A task is completed if its last fragment is completed
 # K(i, nk[i], t) => T(i),   where, forall (i, t)
-# WARNING minimum release optimization
 for i in range(1, nt+1):
+    # OPT minimum release
     minimumrelease = 0
     for j in range(1, nk[i]):
         minimumrelease += k[i][j]
     for t in range(r[i]+minimumrelease, d[i]):
-        cl = [ -1 * getlit[('k',i,nk[i],t)], getlit[('t',i)] ]
-        print(cl)
-        hardclauses.append(cl)
+        clr = [ -1 * getlit[('k',i,nk[i],t)], getlit[('t',i)] ]
+        cll = [ -1 * getlit[('t',i)], getlit[('k',i,nk[i],t)] ]
+        hardclauses.append(clr)
+        hardclauses.append(cll)
 
 
 ################
@@ -107,12 +108,19 @@ for i in range(1, nt+1):
 ##################
 
 # Convert to wcnf
-cnf = 'p wcnf ' + str(nt) + ' ' + str(nt) + ' ' + str(nt + 1) + '\n'
+top = str(nt + 1)
+cnf = 'p wcnf ' + str(nt) + ' ' + str(nt) + ' ' + top + '\n'
+
+for c in hardclauses:
+    cnf += top
+    for lit in c:
+        cnf += ' ' + str(lit)
+    cnf += ' 0\n'
 
 for c in softclauses:
     cnf += '1 ' + str(c[0]) + ' 0\n'
 
 # Run
-print(cnf)
+#print(cnf)
 solution = subprocess.run(solver, input=bytes(cnf, encoding='utf-8'))
 print(solution)
