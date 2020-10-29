@@ -88,10 +88,15 @@ for i in range(1, nt+1):
     pass
 
 # k must be processed in order
+# TODO optimize redundant clauses
 for i in range(1, nt+1):
     for j in range(2, nk[i]+1):
-#        -(k,i,j) \/ (k,i,j-1)
-        pass
+        for t in range(r[i], d[i]):
+            cl = [-1 * getlit[('k',i,j,t)]]
+            for x in range(r[i], t):
+                cl.append(getlit[('k',i,j-1,x)])
+
+            hardclauses.append(cl)
 
 
 ################
