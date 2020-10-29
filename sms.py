@@ -72,8 +72,10 @@ hardclauses = []
 # k must be processed in order
 for i in range(1, nt+1):
     for j in range(2, nk[i]+1):
+        for t in range(r[i], d[i]):
+            cl = [-1 * getlit('k',i,j)]
+
 #        -(k,i,j) \/ (k,i,j-1)
-        pass
 
 
 ################
