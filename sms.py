@@ -69,6 +69,12 @@ print(getvar)
 
 hardclauses = []
 
+# A task is completed if its last fragment is completed
+# K(i, nk[i], t) => T(i),   where, forall (i, t)
+for i in range(1, nt+1):
+    pass
+
+
 # k must be processed in order
 for i in range(1, nt+1):
     for j in range(2, nk[i]+1):
@@ -84,8 +90,8 @@ for i in range(1, nt+1):
 
 softclauses = []
 
-for task in range(1,nt+1):
-    softclauses.append([task])
+for i in range(1, nt+1):
+    softclauses.append([getlit[('t',i)]])
 
 
 ##################
