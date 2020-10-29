@@ -28,7 +28,7 @@ for line in fi.input():
         p.append(int(line[1]))
         d.append(int(line[2]))
         nk.append(int(line[3]))
-        k.append([int(k) for k in line[4:]])
+        k.append([-1] + [int(k) for k in line[4:]])
     else:
         line = line.split()
         if line[0] == 0:
@@ -69,11 +69,23 @@ print(getvar)
 
 hardclauses = []
 
+# k must be processed in order
+# TODO optimize redundant clauses
+for i in range(1, nt+1):
+    for j in range(2, nk[i]+1):
+        for t in range(r[i], d[i]):
+            cl = [-1 * getlit[('k',i,j,t)]]
+            for x in range(r[i], t):
+                cl.append(getlit[('k',i,j-1,x)])
+
+            hardclauses.append(cl)
+            
+
 # A task is completed if its last fragment is completed
 # K(i, nk[i], t) => T(i),   where, forall (i, t)
 for i in range(1, nt+1):
+    #hardclauses.append([,])
     pass
-
 
 # k must be processed in order
 for i in range(1, nt+1):
