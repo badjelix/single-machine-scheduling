@@ -152,7 +152,6 @@ for i in range(1, nt+1):
                     taskinfo += ' ' + str(t)
                     break
         taskinfo += '\n'
-        print(taskinfo)
     output += taskinfo
 
 print(output)
