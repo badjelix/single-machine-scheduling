@@ -58,7 +58,8 @@ for i in range(1,nt+1):
             lit += 1
 
 print('mapa:')
-print(getvar)
+for entry in getvar:
+    print(entry, ':',getvar[entry])
 
 
 ################
@@ -122,5 +123,23 @@ for c in softclauses:
 
 # Run
 #print(cnf)
-solution = subprocess.run(solver, input=bytes(cnf, encoding='utf-8'))
+solution = str(subprocess.run(solver, input=bytes(cnf, encoding='utf-8'), capture_output=True).stdout, encoding='utf-8')
+
+# Interpet solver output
 print(solution)
+cost = nt
+model = []
+for line in solution.split('\n'):
+    linearray = line.split()
+    if linearray != [] and linearray[0] == 'o':
+        cost = int(linearray[1])
+    elif linearray != [] and linearray[0] == 'v':
+        model = list(map(int, linearray[1:]))
+
+
+
+print(str(nt-cost))
+for i in range(1, nt+1):
+    if model[i-1] > 0:
+        output = str(i)
+    print(output)
