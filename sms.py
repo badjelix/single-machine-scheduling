@@ -137,9 +137,22 @@ for line in solution.split('\n'):
         model = list(map(int, linearray[1:]))
 
 
+# Print optimum number of processed tasks
+output = ''
+output += str(nt-cost) + '\n'
 
-print(str(nt-cost))
+# For every task that is processed, print its fragments
 for i in range(1, nt+1):
+    taskinfo = ''
     if model[i-1] > 0:
-        output = str(i)
-    print(output)
+        taskinfo += str(i)
+        for j in range(1, nk[i]+1):
+            for t in range(r[i], d[i]):
+                if getlit[('k', i, j, t)] in model:
+                    taskinfo += ' ' + str(t)
+                    break
+        taskinfo += '\n'
+        print(taskinfo)
+    output += taskinfo
+
+print(output)
