@@ -85,8 +85,20 @@ for i in range(1, nt+1):
     for j in range(1, nk[i]+1):
         for t in range(r[i], d[i]):
             if t == 0:
-                pass
-
+                for x in range(t+1, t + k[i][j]):
+                    cl = [-1 * getlit[('k',i,j,0)], getlit[('k',i,j,x)]]
+                    hardclauses.append(cl)
+            elif t == r[i]:
+                for x in range(t+1, t + k[i][j]):
+                    cl = [-1 * getlit[('k',i,j,r[i])], getlit[('k',i,j,x)]]
+                    hardclauses.append(cl)                
+            else:
+                for x in range(t+1, t + k[i][j]):
+                    if x >= d[i]:
+                        cl = [-1 * getlit[('k',i,j,t)], getlit[('k',i,j,t-1)]]
+                    else:
+                        cl = [-1 * getlit[('k',i,j,t)], getlit[('k',i,j,t-1)], getlit[('k',i,j,x)]]
+                    hardclauses.append(cl)
 
 
 # A task is completed if its last fragment is completed
