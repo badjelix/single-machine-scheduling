@@ -114,6 +114,22 @@ for i in range(1, nt+1):
         hardclauses.append(clr)
         hardclauses.append(cll)
 
+# #################### PAIRWISE GRILO ####################
+# # Only one fragment can be processed at instant t PAIRWISE ENCODING
+# # sum [iterate on i,j]  K(i, j, t) <= 1 ,   forall(t)
+# for t in range(0, max(d)):
+#     conflictious = []
+#     for i in range(1, nt+1):
+#         if r[i] <= t and t < d[i]:
+#             for j in range(1, nk[i]+1):
+#                 conflictious.append(getlit[('k',i,j,t)])
+#     print('conflictious: ', conflictious)
+#     for k in range(0, len(conflictious)):
+#         for conf in conflictious[(k+1):]:
+#             print([-1 * conflictious[k], -1 * conf])
+#             hardclauses.append([-1 * conflictious[k], -1 * conf])
+
+
 ################
 # SOFT CLAUSES #
 ################
@@ -156,7 +172,7 @@ for line in solution.split('\n'):
     elif linearray != [] and linearray[0] == 'v':
         model = list(map(int, linearray[1:]))
 
-
+print(model)
 # Print optimum number of processed tasks
 output = ''
 output += str(nt-cost) + '\n'
