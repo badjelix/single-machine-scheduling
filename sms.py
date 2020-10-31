@@ -69,6 +69,7 @@ for entry in getvar:
 hardclauses = []
 
 # k must be processed in order
+# K(i, j, t) => union [K(i, j-1, x)]    ,   forall( x < t ) forall(i, j)
 # TODO optimize redundant clauses
 for i in range(1, nt+1):
     for j in range(2, nk[i]+1):
@@ -76,9 +77,17 @@ for i in range(1, nt+1):
             cl = [-1 * getlit[('k',i,j,t)]]
             for x in range(r[i], t):
                 cl.append(getlit[('k',i,j-1,x)])
-
             hardclauses.append(cl)
-            
+
+# If a fragment starts its execution, it has to be executed until it is completed
+# [K(i, j, t) and -K(i, j, t-1)] or K(i ,j, 0) -> K(i, j, x)    ,   forall(i, j, t)  forall( t < x < t + p(i, j) )
+for i in range(1, nt+1):
+    for j in range(1, nk[i]+1):
+        for t in range(r[i], d[i]):
+            if t == 0:
+                pass
+
+
 
 # A task is completed if its last fragment is completed
 # K(i, nk[i], t) => T(i),   where, forall (i, t)
@@ -92,7 +101,6 @@ for i in range(1, nt+1):
         cll = [ -1 * getlit[('t',i)], getlit[('k',i,nk[i],t)] ]
         hardclauses.append(clr)
         hardclauses.append(cll)
-
 
 ################
 # SOFT CLAUSES #
@@ -152,6 +160,6 @@ for i in range(1, nt+1):
                     taskinfo += ' ' + str(t)
                     break
         taskinfo += '\n'
-    output += taskinfo
+        output += taskinfo
 
 print(output)
