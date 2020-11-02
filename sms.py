@@ -108,26 +108,27 @@ for i in range(1, nt+1):
     minimumrelease = 0
     for j in range(1, nk[i]):
         minimumrelease += k[i][j]
+    cll = [-1 * getlit[('t',i)]]
     for t in range(r[i]+minimumrelease, d[i]):
         clr = [ -1 * getlit[('k',i,nk[i],t)], getlit[('t',i)] ]
-        cll = [ -1 * getlit[('t',i)], getlit[('k',i,nk[i],t)] ]
+        cll.append(getlit[('k',i,nk[i],t)])
         hardclauses.append(clr)
-        hardclauses.append(cll)
 
-# #################### PAIRWISE GRILO ####################
-# # Only one fragment can be processed at instant t PAIRWISE ENCODING
-# # sum [iterate on i,j]  K(i, j, t) <= 1 ,   forall(t)
-# for t in range(0, max(d)):
-#     conflictious = []
-#     for i in range(1, nt+1):
-#         if r[i] <= t and t < d[i]:
-#             for j in range(1, nk[i]+1):
-#                 conflictious.append(getlit[('k',i,j,t)])
-#     print('conflictious: ', conflictious)
-#     for k in range(0, len(conflictious)):
-#         for conf in conflictious[(k+1):]:
-#             print([-1 * conflictious[k], -1 * conf])
-#             hardclauses.append([-1 * conflictious[k], -1 * conf])
+    hardclauses.append(cll)
+
+# Only one fragment can be processed at instant t (PAIRWISE ENCODING)
+# sum [iterate on i,j]  K(i, j, t) <= 1 ,   forall(t)
+for t in range(0, max(d)):
+    conflictious = []
+    for i in range(1, nt+1):
+        if r[i] <= t and t < d[i]:
+            for j in range(1, nk[i]+1):
+                conflictious.append(getlit[('k',i,j,t)])
+    print('conflictious: ', conflictious)
+    for k in range(0, len(conflictious)):
+        for conf in conflictious[(k+1):]:
+            print([-1 * conflictious[k], -1 * conf])
+            hardclauses.append([-1 * conflictious[k], -1 * conf])
 
 
 ################
@@ -173,6 +174,10 @@ for line in solution.split('\n'):
         model = list(map(int, linearray[1:]))
 
 print(model)
+for l in model:
+    if l > 0:
+        print(getvar[l])
+
 # Print optimum number of processed tasks
 output = ''
 output += str(nt-cost) + '\n'
