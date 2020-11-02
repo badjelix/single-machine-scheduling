@@ -3,6 +3,7 @@ import fileinput as fi
 
 solver = '../open-wbo/open-wbo'
 
+
 ######################
 # TASKS' DATA ARRAYS #
 ######################
@@ -37,6 +38,7 @@ for line in fi.input():
             deps.append([int(dep) for dep in line[1:]])
 
 
+
 #########################
 # VARIABLE/LITERAL MAPS #
 #########################
@@ -62,6 +64,7 @@ for entry in getvar:
     print(entry, ':',getvar[entry])
 
 
+
 ################
 # HARD CLAUSES #
 ################
@@ -78,6 +81,7 @@ for i in range(1, nt+1):
             for x in range(r[i], t):
                 cl.append(getlit[('k',i,j-1,x)])
             hardclauses.append(cl)
+
 
 # If a fragment starts its execution, it has to be executed until it is completed
 # [K(i, j, t) and -K(i, j, t-1)] or K(i ,j, 0) -> K(i, j, x)    ,   forall(i, j, t)  forall( t < x < t + p(i, j) )
@@ -101,6 +105,25 @@ for i in range(1, nt+1):
                     hardclauses.append(cl)
 
 
+# If a fragmant starts its execution, a fragment can’t be processed after its processing time
+# [K(i, j, t) and -K(i, j, t-1)] or K(i, j, 0) -> -K(i, j, x)   ,   forall(i, j, t)  forall( t + p(i, j) >= x)
+for i in range(1, nt+1):
+    for j in range(1, nk[i]+1):
+        for t in range(r[i], d[i]):
+            if t == 0:
+                for x in range(t + k[i][j], d[i]):
+                    cl = [-1 * getlit[('k',i,j,0)], -1* getlit[('k',i,j,x)]]
+                    hardclauses.append(cl)
+            elif t == r[i]:
+                for x in range(t + k[i][j], d[i]):
+                    cl = [-1 * getlit[('k',i,j,r[i])], -1 * getlit[('k',i,j,x)]]
+                    hardclauses.append(cl)   
+            else:
+                for x in range(t + k[i][j], d[i]):
+                    cl = [-1 * getlit[('k',i,j,t)], getlit[('k',i,j,t-1)], -1 * getlit[('k',i,j,x)]]
+                    hardclauses.append(cl)
+
+
 # A task is completed if its last fragment is completed
 # K(i, nk[i], t) => T(i),   where, forall (i, t)
 for i in range(1, nt+1):
@@ -116,6 +139,7 @@ for i in range(1, nt+1):
 
     hardclauses.append(cll)
 
+
 # Only one fragment can be processed at instant t (PAIRWISE ENCODING)
 # sum [iterate on i,j]  K(i, j, t) <= 1 ,   forall(t)
 for t in range(0, max(d)):
@@ -124,11 +148,10 @@ for t in range(0, max(d)):
         if r[i] <= t and t < d[i]:
             for j in range(1, nk[i]+1):
                 conflictious.append(getlit[('k',i,j,t)])
-    print('conflictious: ', conflictious)
     for k in range(0, len(conflictious)):
         for conf in conflictious[(k+1):]:
-            print([-1 * conflictious[k], -1 * conf])
             hardclauses.append([-1 * conflictious[k], -1 * conf])
+
 
 
 ################
@@ -139,6 +162,7 @@ softclauses = []
 
 for i in range(1, nt+1):
     softclauses.append([getlit[('t',i)]])
+
 
 
 ##################
@@ -159,7 +183,6 @@ for c in softclauses:
     cnf += '1 ' + str(c[0]) + ' 0\n'
 
 # Run
-#print(cnf)
 solution = str(subprocess.run(solver, input=bytes(cnf, encoding='utf-8'), capture_output=True).stdout, encoding='utf-8')
 
 # Interpet solver output
