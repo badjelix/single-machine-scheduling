@@ -139,7 +139,7 @@ for i in range(1, nt+1):
         for c in deps[i]:
             cl = [-1 * getlit[('k', i, 1, t)]]
             limit = min(t, d[c])
-            for x in range(limit):
+            for x in range(r[c], limit):
                 cl.append(getlit[('k', c, nk[c], x)])
             hardclauses.append(cl)
 
