@@ -59,9 +59,9 @@ for i in range(1,nt+1):
             getvar[lit] = ('k',i,j,t)
             lit += 1
 
-print('mapa:')
-for entry in getvar:
-    print(entry, ':',getvar[entry])
+# print('mapa:')
+# for entry in getvar:
+#     print(entry, ':',getvar[entry])
 
 
 
@@ -88,14 +88,10 @@ for i in range(1, nt+1):
 for i in range(1, nt+1):
     for j in range(1, nk[i]+1):
         for t in range(r[i], d[i]):
-            if t == 0:
+            if t == 0 or t == r[i]:
                 for x in range(t+1, t + k[i][j]):
-                    cl = [-1 * getlit[('k',i,j,0)], getlit[('k',i,j,x)]]
-                    hardclauses.append(cl)
-            elif t == r[i]:
-                for x in range(t+1, t + k[i][j]):
-                    cl = [-1 * getlit[('k',i,j,r[i])], getlit[('k',i,j,x)]]
-                    hardclauses.append(cl)                
+                    cl = [-1 * getlit[('k',i,j,t)], getlit[('k',i,j,x)]]
+                    hardclauses.append(cl)           
             else:
                 for x in range(t+1, t + k[i][j]):
                     if x >= d[i]:
@@ -110,14 +106,10 @@ for i in range(1, nt+1):
 for i in range(1, nt+1):
     for j in range(1, nk[i]+1):
         for t in range(r[i], d[i]):
-            if t == 0:
+            if t == 0 or t == r[i]:
                 for x in range(t + k[i][j], d[i]):
-                    cl = [-1 * getlit[('k',i,j,0)], -1* getlit[('k',i,j,x)]]
+                    cl = [-1 * getlit[('k',i,j,t)], -1* getlit[('k',i,j,x)]]
                     hardclauses.append(cl)
-            elif t == r[i]:
-                for x in range(t + k[i][j], d[i]):
-                    cl = [-1 * getlit[('k',i,j,r[i])], -1 * getlit[('k',i,j,x)]]
-                    hardclauses.append(cl)   
             else:
                 for x in range(t + k[i][j], d[i]):
                     cl = [-1 * getlit[('k',i,j,t)], getlit[('k',i,j,t-1)], -1 * getlit[('k',i,j,x)]]
@@ -141,14 +133,14 @@ for i in range(1, nt+1):
 
 
 # A task can only start if the tasks it depends on are already processed
-# K(i, 0, t) => K(c, nk[c], x) forall (i, t) forall (x < t,  c in d[i])
+# K(i, 1, t) => Ux K(c, nk[c], x) forall (i, t)
 for i in range(1, nt+1):
     for t in range(r[i], d[i]):
         for c in deps[i]:
             cl = [-1 * getlit[('k', i, 1, t)]]
-            for x in range(t):
-                if x < d[c]:
-                    cl.append(getlit[('k', c, nk[c], x)])
+            limit = min(t, d[c])
+            for x in range(limit):
+                cl.append(getlit[('k', c, nk[c], x)])
             hardclauses.append(cl)
 
 
@@ -198,7 +190,7 @@ for c in softclauses:
 solution = str(subprocess.run(solver, input=bytes(cnf, encoding='utf-8'), capture_output=True).stdout, encoding='utf-8')
 
 # Interpet solver output
-print(solution)
+# print(solution)
 cost = nt
 model = []
 for line in solution.split('\n'):
@@ -208,10 +200,10 @@ for line in solution.split('\n'):
     elif linearray != [] and linearray[0] == 'v':
         model = list(map(int, linearray[1:]))
 
-print(model)
-for l in model:
-    if l > 0:
-        print(getvar[l])
+# print(model)
+# for l in model:
+#     if l > 0:
+#         print(getvar[l])
 
 # Print optimum number of processed tasks
 output = ''
