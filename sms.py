@@ -140,6 +140,18 @@ for i in range(1, nt+1):
     hardclauses.append(cll)
 
 
+# A task can only start if the tasks it depends on are already processed
+# K(i, 0, t) => K(c, nk[c], x) forall (i, t) forall (x < t,  c in d[i])
+for i in range(1, nt+1):
+    for t in range(r[i], d[i]):
+        for c in deps[i]:
+            cl = [-1 * getlit[('k', i, 1, t)]]
+            for x in range(t):
+                if x < d[c]:
+                    cl.append(getlit[('k', c, nk[c], x)])
+            hardclauses.append(cl)
+
+
 # Only one fragment can be processed at instant t (PAIRWISE ENCODING)
 # sum [iterate on i,j]  K(i, j, t) <= 1 ,   forall(t)
 for t in range(0, max(d)):
