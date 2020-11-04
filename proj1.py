@@ -188,7 +188,9 @@ for c in softclauses:
     cnf += '1 ' + str(c[0]) + ' 0\n'
 
 # Run
-solution = str(subprocess.run(solver, input=bytes(cnf, encoding='utf-8'), capture_output=True).stdout, encoding='utf-8')
+p = subprocess.Popen(solver, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(po, pe) = p.communicate(input=bytes(cnf, encoding ='utf-8'))
+solution = str(po, encoding ='utf-8')
 
 # Interpet solver output
 # print(solution)
