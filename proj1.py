@@ -1,6 +1,7 @@
 import subprocess
 import fileinput as fi
 
+# solver = './solvers/open-wbo/open-wbo'
 solver = '../open-wbo/open-wbo'
 
 
