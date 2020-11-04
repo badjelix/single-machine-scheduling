@@ -84,6 +84,17 @@ for i in range(1, nt+1):
             hardclauses.append(cl)
 
 
+# For every task i, a fragment j won't be running in timesteps t smaller than the sum of the processing times of all fragments < j
+# TODO test if it helps
+for i in range(1, nt+1):
+    accum = 0
+    for j in range(2, nk[i]+1):
+        accum += k[i][j-1]
+        for x in range(r[i], accum):
+            cl = [-1 * getlit[('k', i, j, x)]]
+            hardclauses.append(cl)
+
+
 # If a fragment starts its execution, it has to be executed until it is completed
 # [K(i, j, t) and -K(i, j, t-1)] or K(i ,j, 0) -> K(i, j, x)    ,   forall(i, j, t)  forall( t < x < t + p(i, j) )
 for i in range(1, nt+1):
