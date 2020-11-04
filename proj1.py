@@ -1,5 +1,7 @@
 import subprocess
 import fileinput as fi
+from pysat.card import *
+import math
 
 # solver = './solvers/open-wbo/open-wbo'
 solver = '../open-wbo/open-wbo'
@@ -145,17 +147,33 @@ for i in range(1, nt+1):
             hardclauses.append(cl)
 
 
-# Only one fragment can be processed at instant t (PAIRWISE ENCODING)
+# # Only one fragment can be processed at instant t (PAIRWISE ENCODING)
+# # sum [iterate on i,j]  K(i, j, t) <= 1 ,   forall(t)
+# for t in range(0, max(d)):
+#     conflictious = []
+#     for i in range(1, nt+1):
+#         if r[i] <= t and t < d[i]:
+#             for j in range(1, nk[i]+1):
+#                 conflictious.append(getlit[('k',i,j,t)])
+#     for k in range(0, len(conflictious)):
+#         for conf in conflictious[(k+1):]:
+#             hardclauses.append([-1 * conflictious[k], -1 * conf])
+
+
+# Only one fragment can be processed at instant t (PYSAT ENCODING)
 # sum [iterate on i,j]  K(i, j, t) <= 1 ,   forall(t)
+nvars = len(getlit)
+max_var = nvars + 1
 for t in range(0, max(d)):
     conflictious = []
     for i in range(1, nt+1):
         if r[i] <= t and t < d[i]:
             for j in range(1, nk[i]+1):
                 conflictious.append(getlit[('k',i,j,t)])
-    for k in range(0, len(conflictious)):
-        for conf in conflictious[(k+1):]:
-            hardclauses.append([-1 * conflictious[k], -1 * conf])
+    constraint = CardEnc.atmost(lits=conflictious, bound=1, top_id=max_var, encoding=EncType.bitwise)
+    for clause in constraint.clauses:
+        hardclauses.append(clause)
+    max_var += math.ceil(math.log(len(conflictious)+1, 2))
 
 
 
