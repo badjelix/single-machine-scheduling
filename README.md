@@ -16,7 +16,21 @@ The following constraints were used to encode the problem:
 
 > Hard Clauses
 
-* A fragment of a task can only be processed during the processing interval of its task (after the release and before the deadline). 
+* A fragment of a task can only be processed during the processing interval of its task. In that way, a variable K(i,j,t) will only exist when t has a value between the task's release and deadline.
+
+* Fragments must be processed in order.
+
+* If a fragment j of task i starts its execution at a given timestep t, it will be executed until it is completed and won't be executed any more after that (K(i, j, x) will be 1 for every t <= x < t + processsing_time(i, j) and will be 0 from then on).
+
+* Only one fragment can be executing at any timestep t. This was encoded as a cardinality constraint using bitwise encoding.
+
+* A task is completed if its last fragment is completed
+
+* A task can only start processing if all of its dependencies are all completed.
+
+> Soft Clauses
+
+* Execute as many tasks i as possible (T(i) for every task i)
 
 
 ## Installation
@@ -30,7 +44,7 @@ make
 
 ## Requirements
 
-* Python 3.7 or above
+* Python 3 or above
 
 
 ## Usage
