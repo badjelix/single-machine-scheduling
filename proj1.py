@@ -11,8 +11,8 @@ solver = '../open-wbo/open-wbo'
 # TASKS' DATA ARRAYS #
 ######################
 
-# !! HACK we initialized the 0th entry of each array so we could reference tasks by their number regarding the problem specification !!
-# !! e.g. task 1 release time can be accessed with r[1]                                                                              !!
+# HACK we initialized the 0th entry of each array so we could reference tasks by their number according the problem specification
+# e.g. task 1 release time can be accessed with r[1]
 nt = 0
 r = [-1]
 p = [-1]
@@ -25,7 +25,6 @@ deps = [[]]
 for line in fi.input():
     if fi.isfirstline():
         nt = int(line)
-    # TODO talvez tirar ifs
     elif fi.filelineno() <= nt+1:
         line = line.split()
         r.append(int(line[0]))
@@ -62,10 +61,6 @@ for i in range(1,nt+1):
             getvar[lit] = ('k',i,j,t)
             lit += 1
 
-# print('mapa:')
-# for entry in getvar:
-#     print(entry, ':',getvar[entry])
-
 
 
 ################
@@ -76,7 +71,6 @@ hardclauses = []
 
 # k must be processed in order
 # K(i, j, t) => union [K(i, j-1, x)]    ,   forall( x < t ) forall(i, j)
-# TODO optimize redundant clauses
 for i in range(1, nt+1):
     for j in range(2, nk[i]+1):
         for t in range(r[i], d[i]):
@@ -87,7 +81,6 @@ for i in range(1, nt+1):
 
 
 # For every task i, a fragment j won't be running in timesteps t smaller than the sum of the processing times of all fragments < j
-# TODO test if it helps
 for i in range(1, nt+1):
     accum = 0
     for j in range(2, nk[i]+1):
@@ -142,7 +135,6 @@ for i in range(1, nt+1):
         clr = [ -1 * getlit[('k',i,nk[i],t)], getlit[('t',i)] ]
         cll.append(getlit[('k',i,nk[i],t)])
         hardclauses.append(clr)
-
     hardclauses.append(cll)
 
 
@@ -158,7 +150,7 @@ for i in range(1, nt+1):
             hardclauses.append(cl)
 
 
-# # Only one fragment can be processed at instant t (PAIRWISE ENCODING)
+# # Only one fragment can be processed at instant t (PAIRWISE ENCODING 'HANDMADE')
 # # sum [iterate on i,j]  K(i, j, t) <= 1 ,   forall(t)
 # for t in range(0, max(d)):
 #     conflictious = []
@@ -171,7 +163,7 @@ for i in range(1, nt+1):
 #             hardclauses.append([-1 * conflictious[k], -1 * conf])
 
 
-# Only one fragment can be processed at instant t (PYSAT ENCODING)
+# Only one fragment can be processed at instant t (PYSAT BITWISE ENCODING)
 # sum [iterate on i,j]  K(i, j, t) <= 1 ,   forall(t)
 nvars = len(getlit)
 max_var = nvars + 1
@@ -221,8 +213,13 @@ p = subprocess.Popen(solver, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stde
 (po, pe) = p.communicate(input=bytes(cnf, encoding ='utf-8'))
 solution = str(po, encoding ='utf-8')
 
+
+
+##########
+# OUTPUT #
+##########
+
 # Interpet solver output
-# print(solution)
 cost = nt
 model = []
 for line in solution.split('\n'):
@@ -231,11 +228,6 @@ for line in solution.split('\n'):
         cost = int(linearray[1])
     elif linearray != [] and linearray[0] == 'v':
         model = list(map(int, linearray[1:]))
-
-# print(model)
-# for l in model:
-#     if l > 0:
-#         print(getvar[l])
 
 # Print optimum number of processed tasks
 output = ''
