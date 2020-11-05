@@ -7,8 +7,8 @@ For the 1st ALC project we developed a software tool for solving the Single Mach
 
 We defined the following variables:
 
-* T(i): task i is completed
-* K(i,j,t): fragment j of task i is being executed in timestep t
+* *T(i)*: task *i* is completed
+* *K(i,j,t)*: fragment *j* of task *i* is being executed in timestep *t*
 
 In order to map these variables (encoded as tuples) to WCNF literals we used two Python dictionaries.
 
@@ -26,7 +26,7 @@ The following constraints were used to encode the problem:
 
 * A task is completed if its last fragment is completed.
 
-* A task can only start processing if all of its dependencies are all completed.
+* A task can only start processing if all of its dependencies are already completed.
 
 > Soft Clauses
 
