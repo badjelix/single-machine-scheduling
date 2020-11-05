@@ -38,7 +38,7 @@ The following constraints were used to encode the problem:
 To install Open-WBO:
 
 ```bash
-cd solvers/wbo
+cd solvers/open-wbo
 
 make
 ```
