@@ -24,13 +24,13 @@ The following constraints were used to encode the problem:
 
 * Only one fragment can be executing at any timestep t. This was encoded as a cardinality constraint using bitwise encoding.
 
-* A task is completed if its last fragment is completed
+* A task is completed if its last fragment is completed.
 
 * A task can only start processing if all of its dependencies are all completed.
 
 > Soft Clauses
 
-* Execute as many tasks *i* as possible (*T(i)* for every task *i*)
+* Execute as many tasks *i* as possible (*T(i)* for every task *i*).
 
 
 ## Installation
@@ -38,7 +38,8 @@ The following constraints were used to encode the problem:
 To install Open-WBO:
 
 ```bash
-cd solvers
+cd solvers/wbo
+
 make
 ```
 
