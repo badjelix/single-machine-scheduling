@@ -16,11 +16,11 @@ The following constraints were used to encode the problem:
 
 > Hard Clauses
 
-* A fragment of a task can only be processed during the processing interval of its task. In that way, a variable K(i,j,t) will only exist when t has a value between the task's release and deadline.
+* A fragment of a task can only be processed during the processing interval of its task. In that way, a variable *K(i,j,t)* will only exist when *t* has a value between the task's release and deadline.
 
 * Fragments must be processed in order.
 
-* If a fragment j of task i starts its execution at a given timestep t, it will be executed until it is completed and won't be executed any more after that (K(i, j, x) will be 1 for every t <= x < t + processsing_time(i, j) and will be 0 from then on).
+* If a fragment *j* of task *i* starts its execution at a given timestep *t*, it will be executed until it is completed and won't be executed any more after that (*K(i, j, x)* will be 1 for every *t <= x < t + processing_time(i, j)* and will be 0 from then on).
 
 * Only one fragment can be executing at any timestep t. This was encoded as a cardinality constraint using bitwise encoding.
 
@@ -30,7 +30,7 @@ The following constraints were used to encode the problem:
 
 > Soft Clauses
 
-* Execute as many tasks i as possible (T(i) for every task i)
+* Execute as many tasks *i* as possible (*T(i)* for every task *i*)
 
 
 ## Installation
@@ -52,7 +52,7 @@ make
 ```bash
 python proj1.py < job.sms > solution.txt
 ```
-Use python3 (or python3.7) if your default is python2.
+Use python3 if your default is python2.
 
 
 ## Contributors
