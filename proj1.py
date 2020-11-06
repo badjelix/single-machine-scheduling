@@ -230,19 +230,18 @@ for line in solution.split('\n'):
 
 # Print optimum number of processed tasks
 output = ''
-output += str(nt-cost) + '\n'
+output += str(nt-cost)
 
 # For every task that is processed, print its fragments
 for i in range(1, nt+1):
     taskinfo = ''
     if model[i-1] > 0:
-        taskinfo += str(i)
+        taskinfo += '\n' + str(i)
         for j in range(1, nk[i]+1):
             for t in range(r[i], d[i]):
                 if getlit[('k', i, j, t)] in model:
                     taskinfo += ' ' + str(t)
                     break
-        taskinfo += '\n'
         output += taskinfo
 
 print(output)
