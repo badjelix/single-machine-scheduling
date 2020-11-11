@@ -3,8 +3,7 @@ import fileinput as fi
 from pysat.card import *
 import math
 
-# solver = './solvers/open-wbo/open-wbo'
-solver = '../open-wbo/open-wbo'
+solver = './solvers/open-wbo/open-wbo'
 
 
 ######################
@@ -80,14 +79,14 @@ for i in range(1, nt+1):
             hardclauses.append(cl)
 
 
-# For every task i, a fragment j won't be running in timesteps t smaller than the sum of the processing times of all fragments < j
-for i in range(1, nt+1):
-    accum = 0
-    for j in range(2, nk[i]+1):
-        accum += k[i][j-1]
-        for x in range(r[i], accum):
-            cl = [-1 * getlit[('k', i, j, x)]]
-            hardclauses.append(cl)
+# # For every task i, a fragment j won't be running in timesteps t smaller than the sum of the processing times of all fragments < j
+# for i in range(1, nt+1):
+#     accum = 0
+#     for j in range(2, nk[i]+1):
+#         accum += k[i][j-1]
+#         for x in range(r[i], accum):
+#             cl = [-1 * getlit[('k', i, j, x)]]
+#             hardclauses.append(cl)
 
 
 # If a fragment starts its execution, it has to be executed until it is completed
@@ -231,19 +230,18 @@ for line in solution.split('\n'):
 
 # Print optimum number of processed tasks
 output = ''
-output += str(nt-cost) + '\n'
+output += str(nt-cost)
 
 # For every task that is processed, print its fragments
 for i in range(1, nt+1):
     taskinfo = ''
     if model[i-1] > 0:
-        taskinfo += str(i)
+        taskinfo += '\n' + str(i)
         for j in range(1, nk[i]+1):
             for t in range(r[i], d[i]):
                 if getlit[('k', i, j, t)] in model:
                     taskinfo += ' ' + str(t)
                     break
-        taskinfo += '\n'
         output += taskinfo
 
 print(output)
