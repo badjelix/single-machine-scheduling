@@ -1,6 +1,6 @@
 from z3 import Solver
 from z3 import Bool, Int, sat, IntVal
-from z3 import Or, And, If, Distinct
+from z3 import Or, And, If, Distinct, Optimize, Implies
 
 
 # define variables
@@ -10,7 +10,7 @@ def read_input():
     pass
 
 
-def solve(puzzle):
+def solve():
     solver = Solver()
 
     if solver.check() == sat:
