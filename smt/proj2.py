@@ -11,7 +11,7 @@ r = [-1]
 p = [-1]
 d = [-1]
 nk = [-1]
-k = [[]]
+pk = [[]]
 deps = [[]]
 
 
@@ -28,7 +28,7 @@ def read_input():
             p.append(int(line[1]))
             d.append(int(line[2]))
             nk.append(int(line[3]))
-            k.append([-1] + [int(k) for k in line[4:]])
+            pk.append([-1] + [int(k) for k in line[4:]])
         else:
             line = line.split()
             if line[0] == 0:
@@ -38,7 +38,7 @@ def read_input():
 
 
 def solve():
-    solver = Optimize()
+    solver = Solver()
 
     F = [-1]
     K = [[]]
@@ -55,6 +55,10 @@ def solve():
 
     # Fragments can only be executing between their task's release and deadline
     # K(i,j) >= r(i) AND K(i,j) + p(i,j) < d(i)
+    # FIXME: podem ser -1 ?
+    for i in range(1, nt+1):
+        for j in range(1, nk[i]+1):
+            solver.add(And(K[i][j] >= r[i], K[i][j] + pk[i][j] < d[i]))
 
 
     if solver.check() == sat:
@@ -66,7 +70,7 @@ def solve():
 
         for i in range(1, nt+1):
             for j in range(1, nk[i]+1):
-                print(f'K({i},{j}): {model[F[i]]}')
+                print(f'K({i},{j}): {model[K[i][j]]}')
         ###############
 
         # TODO: Print output
