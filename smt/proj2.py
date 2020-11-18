@@ -38,13 +38,13 @@ def read_input():
 
 
 def solve():
-    solver = Solver()
+    solver = Optimize()
 
-    F = [-1]
+    T = [-1]
     K = [[]]
 
     for i in range(1, nt+1):
-        F.append(Int(f'F({i})'))
+        T.append(Int(f'T({i})'))
 
     for i in range(1, nt+1):
         frags = [-1]
@@ -52,6 +52,10 @@ def solve():
             frags.append(Int(f'K({i}, {j})'))
         K.append(frags)
 
+    # Task “flags” can only be assigned to 0 or 1 SERA Q É PRECISO???
+    # T(i) >= 0    AND   T(i) <= 1
+    for i in range(1, nt+1):
+        solver.add(And(T[i] >= 0, T[i] <= 1))
 
     # Fragments can only be executing between their task's release and deadline
     # K(i,j) >= r(i) AND K(i,j) + p(i,j) < d(i)
@@ -66,7 +70,7 @@ def solve():
 
         ### Testing ###
         for i in range(1, nt + 1):
-            print(f'F({i}): {model[F[i]]}')
+            print(f'T({i}): {model[T[i]]}')
 
         for i in range(1, nt+1):
             for j in range(1, nk[i]+1):
