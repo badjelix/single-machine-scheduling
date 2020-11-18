@@ -61,16 +61,20 @@ def solve():
     for i in range(1, nt+1):
         for j in range(1, nk[i]+1):
             # solver.add(Or(T[i] == 0, And(K[i][j] >= r[i], K[i][j] + pk[i][j] < d[i])))
-            solver.add(And(K[i][j] >= r[i], K[i][j] + pk[i][j] < d[i]))
+            solver.add(And(K[i][j] >= r[i], K[i][j] + pk[i][j] <= d[i]))
 
     
     # Fragments must be processed in order
     for i in range(1, nt+1):
         for j in range(1, nk[i]): # All except the last one
-            # solver.add(Or(T[i] == 0, K[i][j] + pk[i][j] <= K[i][j+1]))
+            solver.add(Or(T[i] == 0, K[i][j] + pk[i][j] <= K[i][j+1]))
             # solver.add(K[i][j] + pk[i][j] <= K[i][j+1])
             pass
 
+    # # Task can only start if all its dependencies are done
+    # for i in range(1, nt+1):
+    #     for dep in deps[i]:
+    #         solver.add(If(T[dep] == 1, Or(T[i] == 0,  K[i][0] >= K[dep][nk[dep]] + pk[dep][nk[dep]]), T[i] == 0))
 
     solver.maximize(Sum([t for t in T]))
 
