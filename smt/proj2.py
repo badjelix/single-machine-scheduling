@@ -1,7 +1,6 @@
 import fileinput as fi
 from z3 import Solver
-from z3 import Bool, Int, sat, IntVal
-from z3 import Or, And, If, Distinct, Optimize, Implies
+from z3 import Bool, Int, sat, IntVal, Or, And, If, Distinct, Optimize, Implies, Sum
 
 
 # HACK we initialized the 0th entry of each array so we could reference tasks by their number according the problem specification
@@ -52,18 +51,20 @@ def solve():
             frags.append(Int(f'K({i}, {j})'))
         K.append(frags)
 
+
     # Task “flags” can only be assigned to 0 or 1 SERA Q É PRECISO???
-    # T(i) >= 0    AND   T(i) <= 1
     for i in range(1, nt+1):
         solver.add(And(T[i] >= 0, T[i] <= 1))
 
+
     # Fragments can only be executing between their task's release and deadline
-    # K(i,j) >= r(i) AND K(i,j) + p(i,j) < d(i)
-    # FIXME: podem ser -1 ?
     for i in range(1, nt+1):
         for j in range(1, nk[i]+1):
+            # solver.add(Or(T[i] == 0, And(K[i][j] >= r[i], K[i][j] + pk[i][j] < d[i])))
             solver.add(And(K[i][j] >= r[i], K[i][j] + pk[i][j] < d[i]))
 
+
+    solver.maximize(Sum([t for t in T]))
 
     if solver.check() == sat:
         model = solver.model()
