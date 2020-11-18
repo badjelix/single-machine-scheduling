@@ -56,17 +56,22 @@ def solve():
     for i in range(1, nt+1):
         solver.add(And(T[i] >= 0, T[i] <= 1))
 
+    
+    # Force all fragments of non executed tasks to a given value
+    for i in range(1, nt+1):
+        solver.add(Or(T[i] == 1, And([K[i][j] == r[i] for j in range(1, nk[i])])))
+
 
     # Fragments can only be executing between their task's release and deadline
     for i in range(1, nt+1):
         for j in range(1, nk[i]+1):
-            # solver.add(Or(T[i] == 0, And(K[i][j] >= r[i], K[i][j] + pk[i][j] < d[i])))
-            solver.add(And(K[i][j] >= r[i], K[i][j] + pk[i][j] <= d[i]))
+            solver.add(Or(T[i] == 0, And(K[i][j] >= r[i], K[i][j] + pk[i][j] <= d[i])))
+            # solver.add(And(K[i][j] >= r[i], K[i][j] + pk[i][j] <= d[i]))
 
     
     # Fragments must be processed in order
     for i in range(1, nt+1):
-        for j in range(2, nk[i]+1): # All except the last one
+        for j in range(2, nk[i]+1): # All except the first one
             solver.add(Or(T[i] == 0, K[i][j-1] + pk[i][j-1] <= K[i][j]))
             # solver.add(K[i][j-1] + pk[i][j-1] <= K[i][j])
 
@@ -74,9 +79,11 @@ def solve():
     # Only one fragment can be executing at a time
     for i in range(1, nt+1):
         for j in range(1, nk[i]+1):
-            for bi in range(i+1, nt+1):
+            for bi in range(i, nt+1):
                 for bj in range(1, nk[bi]+1):
-                    solver.add(Or( Or(T[i]==0, T[bi]==0), If(K[i][j] > K[bi][bj], K[i][j] >= K[bi][bj] + pk[bi][bj], K[bi][bj] >= K[i][j] + pk[i][j])))
+                    if not (i == bi and j == bj):
+                        solver.add(Or( Or(T[i]==0, T[bi]==0), If(K[i][j] > K[bi][bj], K[i][j] >= K[bi][bj] + pk[bi][bj], K[bi][bj] >= K[i][j] + pk[i][j])))
+
 
     # Task can only start if all its dependencies are done
     for i in range(1, nt+1):
