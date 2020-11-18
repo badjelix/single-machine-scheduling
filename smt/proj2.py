@@ -52,7 +52,7 @@ def solve():
         K.append(frags)
 
 
-    # Task's "flags" can only be assigned to 0 or 1 >>> SERA QUE É PRECISO? <<<
+    # Task's "flags" can only be assigned to 0 or 1
     for i in range(1, nt+1):
         solver.add(And(T[i] >= 0, T[i] <= 1))
 
