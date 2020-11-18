@@ -15,7 +15,7 @@ deps = [[]]
 
 
 def read_input():
-    global nt, r, p, d, nk, k, deps
+    global nt, r, p, d, nk, pk, deps
 
     # Get data from .sms file
     for line in fi.input():
@@ -52,7 +52,7 @@ def solve():
         K.append(frags)
 
 
-    # Task “flags” can only be assigned to 0 or 1 SERA Q É PRECISO???
+    # Task's "flags" can only be assigned to 0 or 1 >>> SERA QUE É PRECISO? <<<
     for i in range(1, nt+1):
         solver.add(And(T[i] >= 0, T[i] <= 1))
 
@@ -62,6 +62,14 @@ def solve():
         for j in range(1, nk[i]+1):
             # solver.add(Or(T[i] == 0, And(K[i][j] >= r[i], K[i][j] + pk[i][j] < d[i])))
             solver.add(And(K[i][j] >= r[i], K[i][j] + pk[i][j] < d[i]))
+
+    
+    # Fragments must be processed in order
+    for i in range(1, nt+1):
+        for j in range(1, nk[i]): # All except the last one
+            # solver.add(Or(T[i] == 0, K[i][j] + pk[i][j] <= K[i][j+1]))
+            # solver.add(K[i][j] + pk[i][j] <= K[i][j+1])
+            pass
 
 
     solver.maximize(Sum([t for t in T]))
