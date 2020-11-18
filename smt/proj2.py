@@ -78,26 +78,44 @@ def solve():
                 for bj in range(1, nk[bi]+1):
                     solver.add(Or( Or(T[i]==0, T[bi]==0), If(K[i][j] > K[bi][bj], K[i][j] >= K[bi][bj] + pk[bi][bj], K[bi][bj] >= K[i][j] + pk[i][j])))
 
-    # # Task can only start if all its dependencies are done
-    # for i in range(1, nt+1):
-    #     for dep in deps[i]:
-    #         solver.add(If(T[dep] == 1, Or(T[i] == 0,  K[i][0] >= K[dep][nk[dep]] + pk[dep][nk[dep]]), T[i] == 0))
+    # Task can only start if all its dependencies are done
+    for i in range(1, nt+1):
+        for dep in deps[i]:
+            solver.add(If(T[dep] == 1, Or(T[i] == 0,  K[i][1] >= K[dep][nk[dep]] + pk[dep][nk[dep]]), T[i] == 0))
 
     solver.maximize(Sum([t for t in T]))
 
     if solver.check() == sat:
         model = solver.model()
 
-        ### Testing ###
-        for i in range(1, nt + 1):
-            print(f'T({i}): {model[T[i]]}')
+        # ### Testing ###
+        # for i in range(1, nt + 1):
+        #     print(f'T({i}): {model[T[i]]}')
 
+        # for i in range(1, nt+1):
+        #     for j in range(1, nk[i]+1):
+        #         print(f'K({i},{j}): {model[K[i][j]]}')
+        # ###############
+
+        output = ''
+
+        # Print optimum number of processed tasks
+        optimal = 0
         for i in range(1, nt+1):
-            for j in range(1, nk[i]+1):
-                print(f'K({i},{j}): {model[K[i][j]]}')
-        ###############
+            if model[T[i]] == 1:
+                optimal += 1
+        output += str(optimal)
 
-        # TODO: Print output
+        # For every task that is processed, print its fragments
+        for i in range(1, nt+1):
+            taskinfo = ''
+            if model[T[i]] == 1:
+                taskinfo += '\n' + str(i)
+                for j in range(1, nk[i]+1):
+                    taskinfo += ' ' + str(model[K[i][j]])
+                output += taskinfo
+        
+        print(output)
 
     else:
         print("Unsatisfiable: error.")
