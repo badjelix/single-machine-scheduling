@@ -5,13 +5,14 @@ from z3 import Bool, Int, sat, IntVal, Or, And, If, Distinct, Optimize, Implies,
 
 # HACK we initialized the 0th entry of each array so we could reference tasks by their number according the problem specification
 # e.g. task 1 release time can be accessed with r[1]
-nt = 0
-r = [-1]
-p = [-1]
-d = [-1]
-nk = [-1]
-pk = [[]]
-deps = [[]]
+
+nt = 0          # number of tasks
+r = [-1]        # release time of each task
+p = [-1]        # total processing time of tasks
+d = [-1]        # deadline time of each task
+nk = [-1]       # number of fragments of each task
+pk = [[]]       # processing time of each fragment of each task
+deps = [[]]     # dependencies of each task
 
 
 def read_input():
@@ -66,14 +67,12 @@ def solve():
     for i in range(1, nt+1):
         for j in range(1, nk[i]+1):
             solver.add(Or(T[i] == 0, And(K[i][j] >= r[i], K[i][j] + pk[i][j] <= d[i])))
-            # solver.add(And(K[i][j] >= r[i], K[i][j] + pk[i][j] <= d[i]))
 
     
     # Fragments must be processed in order
     for i in range(1, nt+1):
         for j in range(2, nk[i]+1): # All except the first one
             solver.add(Or(T[i] == 0, K[i][j-1] + pk[i][j-1] <= K[i][j]))
-            # solver.add(K[i][j-1] + pk[i][j-1] <= K[i][j])
 
     
     # Only one fragment can be executing at a time
@@ -94,15 +93,6 @@ def solve():
 
     if solver.check() == sat:
         model = solver.model()
-
-        # ### Testing ###
-        # for i in range(1, nt + 1):
-        #     print(f'T({i}): {model[T[i]]}')
-
-        # for i in range(1, nt+1):
-        #     for j in range(1, nk[i]+1):
-        #         print(f'K({i},{j}): {model[K[i][j]]}')
-        # ###############
 
         output = ''
 
