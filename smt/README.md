@@ -1,46 +1,43 @@
 # Single Machine Scheduling - Project 2 (FIXME)
 
-For the 2nd ALC project we developed a software tool for solving the Single Machine Scheduling (JFS) problem using SMT. The solver we used was [Open-WBO](http://sat.inesc-id.pt/open-wbo/).
+For the 2nd ALC project we developed a software tool for solving the Single Machine Scheduling (JFS) problem using SMT. The solver we used was [Z3-Solver](https://z3prover.github.io/).
 
 
 ## Implementation
 
 We defined the following variables:
 
-* *T(i)*: task *i* is completed
-* *K(i,j,t)*: fragment *j* of task *i* is being executed in timestep *t*
+* #### *T(i)*: task *i* is completed
+* #### *K(i,j)*: timestamp in which fragment *j* of task *i* starts its execution
 
-In order to map these variables (encoded as tuples) to WCNF literals we used two Python dictionaries.
 
 The following constraints were used to encode the problem:
 
-> Hard Clauses
+* Task's "flags" can only be assigned to 0 or 1
+  > And(T[i] >= 0, T[i] <= 1)
 
-* A fragment of a task can only be processed during the processing interval of its task. In that way, a variable *K(i,j,t)* will only exist when *t* has a value between the task's release and deadline.
+* Force all fragments of non executed tasks to a given value
+  > Or(T[i] == 1, And([K[i][j] == r[i] for j in range(1, nk[i])]))
 
-* Fragments must be processed in order.
+* Fragments can only be executing between their task's release and deadline
+  > Or(T[i] == 0, And(K[i][j] >= r[i], K[i][j] + pk[i][j] <= d[i]))
 
-* If a fragment *j* of task *i* starts its execution at a given timestep *t*, it will be executed until it is completed and won't be executed any more after that (*K(i, j, x)* will be 1 for every *t <= x < t + processing_time(i, j)* and will be 0 from then on).
+* Fragments must be processed in order
+  > Or(T[i] == 0, K[i][j-1] + pk[i][j-1] <= K[i][j])
 
-* Only one fragment can be executing at any timestep t. This was encoded as a cardinality constraint using bitwise encoding.
+* Only one fragment can be executing at a time
+  > Or( Or(T[i1]==0, T[i2]==0), If(K[i1][j1] > K[i2][j2], K[i1][j1] >= K[i2][j2] + pk[i2][j2], K[i2][j2] >= K[i1][j1] + pk[i1][j1]))
 
-* A task is completed if its last fragment is completed.
-
-* A task can only start processing if all of its dependencies are already completed.
-
-> Soft Clauses
-
-* Execute as many tasks *i* as possible (*T(i)* for every task *i*).
+* Task can only start if all its dependencies are done
+  > If(T[dep] == 1, Or(T[i] == 0,  K[i][1] >= K[dep][nk[dep]] + pk[dep][nk[dep]]), T[i] == 0)
 
 
 ## Installation
 
-To install Open-WBO:
+To install Z3-Solver:
 
 ```bash
-cd solvers/open-wbo
-
-make
+pip3 install z3-solver
 ```
 
 ## Requirements
@@ -51,7 +48,7 @@ make
 ## Usage
 
 ```bash
-python proj1.py < job.sms > solution.txt
+python proj2.py < job.sms > solution.txt
 ```
 Use python3 if your default is python2.
 
