@@ -16,7 +16,7 @@ The following constraints were used to encode the problem:
 * Task's "flags" can only be assigned to 0 or 1
   > And(T[i] >= 0, T[i] <= 1)
 
-* Force all fragments of non executed tasks to a given value
+* Force all fragments of non executed tasks to have a fixed arbitrary value (in this case, r[i])
   > Or(T[i] == 1, And([K[i][j] == r[i] for j in range(1, nk[i])]))
 
 * Fragments can only be executing between their task's release and deadline
@@ -26,7 +26,7 @@ The following constraints were used to encode the problem:
   > Or(T[i] == 0, K[i][j-1] + pk[i][j-1] <= K[i][j])
 
 * Only one fragment can be executing at a time
-  > Or( Or(T[i1]==0, T[i2]==0), If(K[i1][j1] > K[i2][j2], K[i1][j1] >= K[i2][j2] + pk[i2][j2], K[i2][j2] >= K[i1][j1] + pk[i1][j1]))
+  > Or(Or(T[i1]==0, T[i2]==0), If(K[i1][j1] > K[i2][j2], K[i1][j1] >= K[i2][j2] + pk[i2][j2], K[i2][j2] >= K[i1][j1] + pk[i1][j1]))
 
 * Task can only start if all its dependencies are done
   > If(T[dep] == 1, Or(T[i] == 0,  K[i][1] >= K[dep][nk[dep]] + pk[dep][nk[dep]]), T[i] == 0)
