@@ -1,4 +1,3 @@
-import time
 import subprocess
 
 
@@ -37,18 +36,22 @@ def read_input():
 
 
 def build_data():
+    data = ''
+
     # TODO construir a string correspondente ao data file .dzn
-    pass
+
+    return data
 
 
 def solve():
     # TODO chamar subprocesso com o .mzn e passar como argumento o .dzn
+
     pass
 
 
 if __name__ == '__main__':
     read_input()
-    data_file = build_data()
+    data = build_data()
     solve()
 
 
