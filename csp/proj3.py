@@ -36,7 +36,9 @@ def read_input():
 
 
 def build_data():
+    
     data = ''
+    data += 'nt = ' str(nt) 
 
     # TODO construir a string correspondente ao data file .dzn
 
@@ -53,8 +55,6 @@ if __name__ == '__main__':
     read_input()
     data = build_data()
     solve()
-
-
 
 
 
