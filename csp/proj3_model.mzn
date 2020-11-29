@@ -1,7 +1,5 @@
 include "alldifferent_except_neg1.mzn";
 
-
-
 % PROBLEM CONSTANTS
 
 int: nt;
@@ -32,6 +30,8 @@ constraint forall(i in 1..nt) (
                (K[i,j] >= r[i] /\ K[i,j] < d[i] - pk[i,j]) \/ K[i,j] = -1
              )
            );
+           
+% Fragments that are not relevant but must exist because we can't create dynamic size arrays in Minizinc are force to have value -1
 constraint forall(i in 1..nt) (
              forall(j in nk[i]+1..maxfrags) (
                K[i,j] = -1
@@ -45,6 +45,9 @@ constraint forall(i in 1..nt) (
              )
            );
            
+% Task is completed if its last fragment is executed
+constraint forall(i in 1..nt) (if K[i,nk[i]] >= 0 then T[i] = true else T[i] = false endif);
+           
 % Only one fragment can be executing at a time - FIXME
 %constraint alldifferent_except_neg1([K[i,j] | i in 1..nt, j in 1..maxfrags]);
                
@@ -54,4 +57,9 @@ constraint forall(i in 1..nt) (
 
 solve maximize sum(i in 1..nt) (bool2int(T[i]));
 
+<<<<<<< HEAD
 %output[];
+=======
+output[show(T)];
+output[show(K)];
+>>>>>>> a5be51bc6a88fe3bf3b8820897391a87c45017ef

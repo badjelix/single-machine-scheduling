@@ -111,18 +111,4 @@ def solve(data):
 if __name__ == '__main__':
     read_input()
     data = build_data()
-    print(data)
     solve(data)
-
-
-
-'''data = "value = 300;" \
-        "x = 5;" \
-        "y = 10;"
-ps = subprocess.Popen(('minizinc', 'model.mzn', '-'),
-                        stdin=subprocess.PIPE,
-                        stdout=subprocess.PIPE,
-                        encoding='utf-8')
-output, _ = ps.communicate(data)
-output = output.split('\n')
-print(output)'''
