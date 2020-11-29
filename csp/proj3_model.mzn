@@ -2,12 +2,14 @@
 
 int: nt;
 int: maxfrags;
+int: maxdeps;
 array [1..nt] of int: r;
 array [1..nt] of int: p;
 array [1..nt] of int: d;
 array [1..nt] of int: nk;
 array [1..nt,1..maxfrags] of int: pk;
-array [1..nt,1..nt] of int: deps;
+array [1..nt,1..maxdeps] of int: deps;
+
 
 
 % CSP VARIABLES
@@ -19,9 +21,6 @@ array [1..nt,1..maxfrags] of var int: K;
 
 % CONSTRAINTS
 
-% Dummy 
-constraint forall(i in 1..nt) (T[i] = true);
-
 % Fragments can only be executing between their task’s release and deadline
 constraint forall(i in 1..nt) (
              forall(j in 1..nk[i]) (
@@ -31,6 +30,6 @@ constraint forall(i in 1..nt) (
 
 % SOLVE
 
-solve satisfy;
+solve maximize sum(i in 1..nt) (bool2int(T[i]));
 
-output[show(T)];
+%output[show(T)];
