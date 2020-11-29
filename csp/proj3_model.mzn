@@ -28,7 +28,7 @@ array [1..nt,1..maxfrags] of var int: K;
 % Fragments can only be executing between their task’s release and deadline
 constraint forall(i in 1..nt) (
              forall(j in 1..nk[i]) (
-               K[i,j] = -1 \/ (K[i,j] >= r[i] /\ K[i,j] < d[i] - pk[i,j])
+               (K[i,j] >= r[i] /\ K[i,j] < d[i] - pk[i,j]) %\/ K[i,j] = -1
              )
            );
 constraint forall(i in 1..nt) (
@@ -37,7 +37,7 @@ constraint forall(i in 1..nt) (
              )
            );
            
-% Only one fragment can be executing at a time
+% Only one fragment can be executing at a time - FIXME
 constraint alldifferent_except_neg1([K[i,j] | i in 1..nt, j in 1..maxfrags]);
                
 
