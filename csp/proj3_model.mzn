@@ -5,6 +5,7 @@ include "alldifferent_except_neg1.mzn";
 % PROBLEM CONSTANTS
 
 int: nt;
+int: maxdeadline;
 int: maxfrags;
 int: maxdeps;
 array [1..nt] of int: r;
@@ -19,7 +20,7 @@ array [1..nt,1..maxdeps] of int: deps;
 % CSP VARIABLES
 
 array [1..nt] of var bool: T;
-array [1..nt,1..maxfrags] of var int: K;
+array [1..nt,1..maxfrags] of var -1..maxdeadline: K;
 
 
 
@@ -46,4 +47,4 @@ constraint alldifferent_except_neg1([K[i,j] | i in 1..nt, j in 1..maxfrags]);
 
 solve maximize sum(i in 1..nt) (bool2int(T[i]));
 
-%output[show(T)];
+output[show(T)];

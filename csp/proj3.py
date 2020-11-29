@@ -56,6 +56,7 @@ def build_data():
     data += '];\n'
 
     # d
+    data += 'maxdeadline = ' + str(max(d)) + ';\n'
     data += 'd = ['
     for i in range(1,len(d)):
         data += str(d[i]) + ','
