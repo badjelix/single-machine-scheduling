@@ -1,3 +1,4 @@
+import fileinput as fi
 import subprocess
 
 
@@ -38,10 +39,29 @@ def read_input():
 def build_data():
     
     data = ''
-    data += 'nt = ' str(nt) + '\n'
-    data += '['
-
+    # nt
+    data += 'nt = ' + str(nt) + ';\n'
+    # r
+    data += 'r = ['
+    for i in range(1,len(r)):
+        data += str(r[i]) + ','
+    data += '];\n'
+    # p
+    data += 'p = ['
+    for i in range(1,len(p)):
+        data += str(p[i]) + ','
+    data += '];\n'
+    # d
+    data += 'd = ['
+    for i in range(1,len(d)):
+        data += str(d[i]) + ','
+    data += '];\n'
     return data
+    # nk
+    data += 'nk = ['
+    for i in range(1,len(nk)):
+        data += str(nk[i]) + ','
+    data += '];\n'
 
 
 def solve():
@@ -53,6 +73,7 @@ def solve():
 if __name__ == '__main__':
     read_input()
     data = build_data()
+    print(data)
     solve()
 
 
