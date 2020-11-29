@@ -1,4 +1,5 @@
-% Problem variables (nr of tasks, release, deadline, nr of fragments, etc)
+% VARIABLES
+
 int: nt;
 int: maxfrags;
 array [1..nt] of int: r;
@@ -12,16 +13,19 @@ array [1..nt,1..maxfrags] of var int: K;
 
 
 
-% Constraints
+% CONSTRAINTS
 
+% Dummy 
 constraint forall(i in 1..nt) (T[i] = true);
 
-%constraint forall(i in 1..nt) (
-%             forall(j in 1..nk[i]) (
-%               (K[i,j] >= r[i] /\ K[i,j] < d[i] - pk[i,j]) \/ K[i,j] = -1));
+% Fragments can only be executing between their task’s release and deadline
+constraint forall(i in 1..nt) (
+             forall(j in 1..nk[i]) (
+               (K[i,j] >= r[i] /\ K[i,j] < d[i] - pk[i,j]) \/ K[i,j] = -1));
                
 
 
+% SOLVE
 
 solve satisfy;
 
