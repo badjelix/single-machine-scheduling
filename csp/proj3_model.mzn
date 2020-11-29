@@ -1,3 +1,7 @@
+include "alldifferent_except_neg1.mzn";
+
+
+
 % PROBLEM CONSTANTS
 
 int: nt;
@@ -24,7 +28,17 @@ array [1..nt,1..maxfrags] of var int: K;
 % Fragments can only be executing between their task’s release and deadline
 constraint forall(i in 1..nt) (
              forall(j in 1..nk[i]) (
-               (K[i,j] >= r[i] /\ K[i,j] < d[i] - pk[i,j]) \/ K[i,j] = -1));
+               K[i,j] = -1 \/ (K[i,j] >= r[i] /\ K[i,j] < d[i] - pk[i,j])
+             )
+           );
+constraint forall(i in 1..nt) (
+             forall(j in nk[i]+1..maxfrags) (
+               K[i,j] = -1
+             )
+           );
+           
+% Only one fragment can be executing at a time
+constraint alldifferent_except_neg1([K[i,j] | i in 1..nt, j in 1..maxfrags]);
                
 
 
