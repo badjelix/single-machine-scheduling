@@ -1,6 +1,7 @@
 % PROBLEM CONSTANTS
 
 int: nt;
+int: maxdeadline;
 int: maxfrags;
 int: maxdeps;
 array [1..nt] of int: r;
@@ -15,7 +16,7 @@ array [1..nt,1..maxdeps] of int: deps;
 % CSP VARIABLES
 
 array [1..nt] of var bool: T;
-array [1..nt,1..maxfrags] of var int: K;
+array [1..nt,1..maxfrags] of var -1..maxdeadline: K;
 
 
 
@@ -24,7 +25,9 @@ array [1..nt,1..maxfrags] of var int: K;
 % Fragments can only be executing between their task’s release and deadline
 constraint forall(i in 1..nt) (
              forall(j in 1..nk[i]) (
-               (K[i,j] >= r[i] /\ K[i,j] < d[i] - pk[i,j]) \/ K[i,j] = -1));
+               (K[i,j] >= r[i] /\ K[i,j] < (d[i] - pk[i,j])) \/ (K[i,j] = -1)
+             )
+           );
                
 
 
@@ -32,4 +35,4 @@ constraint forall(i in 1..nt) (
 
 solve maximize sum(i in 1..nt) (bool2int(T[i]));
 
-%output[show(T)];
+output[show(T)];
