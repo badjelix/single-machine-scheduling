@@ -96,17 +96,22 @@ def build_data():
     return data
 
 
-def solve():
+def solve(data):
     # TODO chamar subprocesso com o .mzn e passar como argumento o .dzn
-
-    pass
+    ps = subprocess.Popen(('minizinc', 'proj3_model.mzn', '-'),
+                        stdin=subprocess.PIPE,
+                        stdout=subprocess.PIPE,
+                        encoding='utf-8')
+    output, _ = ps.communicate(data)
+    output = output.split('\n')
+    print(output)
 
 
 if __name__ == '__main__':
     read_input()
     data = build_data()
     print(data)
-    solve()
+    solve(data)
 
 
 
