@@ -4,6 +4,7 @@ array [1..nt] of int: r;
 array [1..nt] of int: p;
 array [1..nt] of int: d;
 array [1..nt] of int: nk;
+array [1..nt] of
 
 
 solve satisfy;

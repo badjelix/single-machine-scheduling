@@ -38,9 +38,8 @@ def read_input():
 def build_data():
     
     data = ''
-    data += 'nt = ' str(nt) 
-
-    # TODO construir a string correspondente ao data file .dzn
+    data += 'nt = ' str(nt) + '\n'
+    data += '['
 
     return data
 
