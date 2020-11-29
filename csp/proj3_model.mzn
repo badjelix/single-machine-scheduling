@@ -29,7 +29,7 @@ array [1..nt,1..maxfrags] of var -1..maxdeadline: K;
 % Fragments can only be executing between their task’s release and deadline
 constraint forall(i in 1..nt) (
              forall(j in 1..nk[i]) (
-               (K[i,j] >= r[i] /\ K[i,j] < d[i] - pk[i,j]) %\/ K[i,j] = -1
+               (K[i,j] >= r[i] /\ K[i,j] < d[i] - pk[i,j]) \/ K[i,j] = -1
              )
            );
 constraint forall(i in 1..nt) (
@@ -38,8 +38,15 @@ constraint forall(i in 1..nt) (
              )
            );
            
+% Fragments must be processed in order
+constraint forall(i in 1..nt) (
+             forall(j in 1..maxfrags-1) (
+               if K[i,j] != -1 then K[i,j] + pk[i,j] <= K[i,j+1] else K[i,j+1] = -1 endif
+             )
+           );
+           
 % Only one fragment can be executing at a time - FIXME
-constraint alldifferent_except_neg1([K[i,j] | i in 1..nt, j in 1..maxfrags]);
+%constraint alldifferent_except_neg1([K[i,j] | i in 1..nt, j in 1..maxfrags]);
                
 
 
@@ -47,4 +54,4 @@ constraint alldifferent_except_neg1([K[i,j] | i in 1..nt, j in 1..maxfrags]);
 
 solve maximize sum(i in 1..nt) (bool2int(T[i]));
 
-output[show(T)];
+%output[];
