@@ -39,29 +39,61 @@ def read_input():
 def build_data():
     
     data = ''
+
     # nt
     data += 'nt = ' + str(nt) + ';\n'
+
     # r
     data += 'r = ['
     for i in range(1,len(r)):
         data += str(r[i]) + ','
     data += '];\n'
+    
     # p
     data += 'p = ['
     for i in range(1,len(p)):
         data += str(p[i]) + ','
     data += '];\n'
+
     # d
     data += 'd = ['
     for i in range(1,len(d)):
         data += str(d[i]) + ','
     data += '];\n'
-    return data
+
     # nk
     data += 'nk = ['
     for i in range(1,len(nk)):
         data += str(nk[i]) + ','
     data += '];\n'
+
+    # pk
+    maxfrags = len(max(pk)) - 1
+    data += 'maxfrags = ' + str(maxfrags) + ';\n'
+    data += 'pk = ['
+    for i in range(1, len(pk)):
+        data += '|'
+        for j in range(1, maxfrags+1):
+            if j < len(pk[i]):
+                data += str(pk[i][j]) + ','
+            else:
+                data += '-1,'
+    data += '|];\n'
+
+    # deps
+    maxdeps = len(max(deps))
+    data += 'maxdeps = ' + str(maxdeps) + ';\n'
+    data += 'deps = ['   
+    for i in range(1, len(deps)):
+        data += '|'
+        for j in range(0, maxdeps):
+            if j < len(deps[i]):
+                data += str(deps[i][j]) + ','
+            else:
+                data += '-1,'
+    data += '|];'
+
+    return data
 
 
 def solve():
