@@ -37,18 +37,35 @@ constraint forall(i in 1..nt) (
              )
            );
            
-% Fragments must be processed in order
+% Fragments must be processed and in order
 constraint forall(i in 1..nt) (
-             forall(j in 1..nk[i]-1) (
-               if K[i,j] != -1 then K[i,j] + pk[i,j] <= K[i,j+1] else K[i,j+1] = -1 endif
+             forall(j in 2..nk[i]) (
+               (T[i] = true) -> K[i,j-1] + pk[i,j-1] <= K[i,j]
+             /*forall(j in 1..nk[i]-1) (
+               if K[i,j] != -1 then K[i,j] + pk[i,j] <= K[i,j+1] else K[i,j+1] = -1 endif*/
              )
            );
            
 % Task is completed if its last fragment is executed
-constraint forall(i in 1..nt) (if K[i,nk[i]] >= 0 then T[i] = true else T[i] = false endif);
+constraint forall(i in 1..nt) (if K[i,1] >= 0 then T[i] = true else T[i] = false endif);
            
 % Only one fragment can be executing at a time - FIXME
 %constraint alldifferent_except_neg1([K[i,j] | i in 1..nt, j in 1..maxfrags]);
+
+% Only one fragment can be executing at a time (VERSAO SMT)
+constraint forall(i in 1..nt) (
+             forall(j in 1..nk[i]) (
+               forall(bi in i+1..nt) (
+                 forall(bj in 1..nk[bi]) (
+                   (T[i] = 0 \/ T[bi] = 0) \/ if K[i,j] > K[bi, bj] then
+                                                K[i,j] >= K[bi, bj] + pk[bi, bj]
+                                              else
+                                                K[bi, bj] >= K[i,j] + pk[i,j]
+                                              endif
+                 )
+               )
+             )
+          );
 
 % Task can only start if all its dependencies are done
 constraint forall(i in 1..nt) (
@@ -67,5 +84,5 @@ constraint forall(i in 1..nt) (
 
 solve maximize sum(i in 1..nt) (bool2int(T[i]));
 
-output[show(T)];
+output[show(T) ++ "|"];
 output[show(K)];
