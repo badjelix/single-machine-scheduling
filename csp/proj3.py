@@ -12,6 +12,7 @@ d = [-1]        # deadline time of each task
 nk = [-1]       # number of fragments of each task
 pk = [[]]       # processing time of each fragment of each task
 deps = [[]]     # dependencies of each task
+maxfrags = 0
 
 
 def read_input():
@@ -37,6 +38,7 @@ def read_input():
 
 
 def build_data():
+    global maxfrags
     
     data = ''
 
@@ -90,7 +92,7 @@ def build_data():
             data += str(deps[i][j]) + ','
         data += '},'
     data += '];'
-    print(data)
+    #print(data)
     return data
 
 
@@ -101,7 +103,29 @@ def solve(data):
                         encoding='utf-8')
     output, _ = ps.communicate(data)
     output = output.split('\n')
-    print(output)
+
+    # Converting string output to solution
+    solution = ''
+    output = output[0].replace(" ", "").split('|')
+    for i in range(len(output)):
+        output[i] = output[i].strip('[]\'').split(',')
+    
+    n_executed = output[0].count('true')
+    solution += f'{n_executed}'
+    for task in range(len(output[0])):
+        if output[0][task] == 'true':
+            solution += f'\n{task+1}'
+
+            index = task * maxfrags
+            for frag in range(nk[task+1]):
+                solution += f' {output[1][index+frag]}'
+
+    # Print solution
+    print(solution)
+        
+
+    
+        
 
 
 if __name__ == '__main__':

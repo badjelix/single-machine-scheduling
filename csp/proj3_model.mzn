@@ -88,5 +88,5 @@ constraint forall(i in 1..nt) (
 
 solve maximize sum(i in 1..nt) (bool2int(T[i]));
 
-output[show(T)];
+output[show(T) ++ "|"];
 output[show(K)];
