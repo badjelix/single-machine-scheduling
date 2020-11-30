@@ -83,17 +83,14 @@ def build_data():
 
     # deps
     maxdeps = len(max(deps))
-    data += 'maxdeps = ' + str(maxdeps) + ';\n'
     data += 'deps = ['   
     for i in range(1, len(deps)):
-        data += '|'
-        for j in range(0, maxdeps):
-            if j < len(deps[i]):
-                data += str(deps[i][j]) + ','
-            else:
-                data += '-1,'
-    data += '|];'
-
+        data += '{'
+        for j in range(0, len(deps[i])):
+            data += str(deps[i][j]) + ','
+        data += '},'
+    data += '];'
+    print(data)
     return data
 
 
