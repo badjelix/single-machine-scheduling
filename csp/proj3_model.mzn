@@ -60,11 +60,7 @@ constraint forall(i in 1..nt) (
                endif
              )
            );
-           
-% for d in deps[i]:
-%     If ( T(d) = 1 ; Or ( K(i,0) >= K(d,nk[d]) + pk(d,nk[d]) ; K(i,0) = -1 ) ; K(i,0) = -1 )
-
-               
+                         
 
 
 % SOLVE
