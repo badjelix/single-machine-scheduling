@@ -71,7 +71,7 @@ def build_data():
     data += '];\n'
 
     # pk
-    maxfrags = len(max(pk)) - 1
+    maxfrags = max(nk)
     data += 'maxfrags = ' + str(maxfrags) + ';\n'
     data += 'pk = ['
     for i in range(1, len(pk)):
@@ -92,7 +92,7 @@ def build_data():
             data += str(deps[i][j]) + ','
         data += '},'
     data += '];'
-    #print(data)
+    # print(data)
     return data
 
 
