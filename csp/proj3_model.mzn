@@ -5,13 +5,12 @@ include "alldifferent_except_neg1.mzn";
 int: nt;
 int: maxdeadline;
 int: maxfrags;
-int: maxdeps;
 array [1..nt] of int: r;
 array [1..nt] of int: p;
 array [1..nt] of int: d;
 array [1..nt] of int: nk;
 array [1..nt,1..maxfrags] of int: pk;
-array [1..nt,1..maxdeps] of int: deps;
+array [1..nt] of set of 1..nt: deps;
 
 
 
@@ -50,6 +49,21 @@ constraint forall(i in 1..nt) (if K[i,nk[i]] >= 0 then T[i] = true else T[i] = f
            
 % Only one fragment can be executing at a time - FIXME
 %constraint alldifferent_except_neg1([K[i,j] | i in 1..nt, j in 1..maxfrags]);
+
+% Task can only start if all its dependencies are done
+constraint forall(i in 1..nt) (
+             forall(dep in deps[i]) (
+               if T[dep] = true then
+                                  T[i] = false \/ K[i,1] >= K[dep,nk[dep]] + pk[dep,nk[dep]]
+                                else
+                                  T[i] = false
+               endif
+             )
+           );
+           
+% for d in deps[i]:
+%     If ( T(d) = 1 ; Or ( K(i,0) >= K(d,nk[d]) + pk(d,nk[d]) ; K(i,0) = -1 ) ; K(i,0) = -1 )
+
                
 
 
