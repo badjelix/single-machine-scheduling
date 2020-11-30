@@ -31,17 +31,19 @@ constraint forall(i in 1..nt) (
              )
            );
            
-% Fragments that are not relevant but must exist because we can't create dynamic size arrays in Minizinc are force to have value -1
+% Fragments that are not relevant but must exist because we can't create dynamic size arrays in Minizinc are forced to have value -1
 constraint forall(i in 1..nt) (
              forall(j in nk[i]+1..maxfrags) (
                K[i,j] = -1
              )
            );
            
-% Fragments must be processed in order
+% Fragments must be processed and in order
 constraint forall(i in 1..nt) (
-             forall(j in 2..nk[i]) (
-               (T[i] = true) -> K[i,j-1] + pk[i,j-1] <= K[i,j]
+             /*forall(j in 2..nk[i]) (
+               (T[i] = true) -> K[i,j-1] + pk[i,j-1] <= K[i,j]*/
+             forall(j in 1..nk[i]-1) (
+               if K[i,j] != -1 then K[i,j] + pk[i,j] <= K[i,j+1] else K[i,j+1] = -1 endif
              )
            );
            
