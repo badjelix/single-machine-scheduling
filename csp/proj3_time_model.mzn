@@ -18,7 +18,7 @@ array [1..nt] of set of 1..nt: deps;
 
 array [1..nt] of var bool: T;
 array [1..nt,1..maxfrags] of var -1..maxdeadline: K;
-array [1..maxdeadline] of var 0..1: time;
+array [0..maxdeadline] of var 0..1: time;
 
 
 
