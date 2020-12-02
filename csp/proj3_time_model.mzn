@@ -18,6 +18,7 @@ array [1..nt] of set of 1..nt: deps;
 
 array [1..nt] of var bool: T;
 array [1..nt,1..maxfrags] of var -1..maxdeadline: K;
+array [0..maxdeadline] of var 0..1: time;
 
 
 
@@ -49,19 +50,14 @@ constraint forall(i in 1..nt) (
 % Task is completed if its last fragment is executed
 constraint forall(i in 1..nt) (if K[i,1] >= 0 then T[i] = true else T[i] = false endif);
            
-% Only one fragment can be executing at a time - FIXME
-% constraint alldifferent_except_neg1([K[i,j] | i in 1..nt, j in 1..maxfrags]);
-
-% Only one fragment can be executing at a time (VERSAO SMT)
+% Only one fragment can be executing at a time
 constraint forall(i in 1..nt) (
              forall(j in 1..nk[i]) (
-               forall(bi in i+1..nt) (
-                 forall(bj in 1..nk[bi]) (
-                   K[i,j] >= K[bi, bj] + pk[bi, bj] \/ K[bi, bj] >= K[i,j] + pk[i,j] \/ bool2int(T[i]) + bool2int(T[bi]) < 2
-                 )
-               )
+               if K[i,j] >= 0 then forall(pi in K[i,j]..K[i,j]+pk[i,j]-1) (time[pi] = time[pi] + 1)
+               endif
              )
-          );
+           );
+
 
 % Task can only start if all its dependencies are done
 constraint forall(i in 1..nt) (
@@ -71,7 +67,6 @@ constraint forall(i in 1..nt) (
                                 else
                                   T[i] = false
                endif
-               /*T[i] = false \/ (T[dep] = true /\ K[i,1] >= K[dep,nk[dep]] + pk[dep,nk[dep]])*/
              )
            );
                          
