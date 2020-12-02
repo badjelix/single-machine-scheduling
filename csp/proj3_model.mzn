@@ -50,18 +50,14 @@ constraint forall(i in 1..nt) (
 constraint forall(i in 1..nt) (if K[i,1] >= 0 then T[i] = true else T[i] = false endif);
            
 % Only one fragment can be executing at a time - FIXME
-%constraint alldifferent_except_neg1([K[i,j] | i in 1..nt, j in 1..maxfrags]);
+% constraint alldifferent_except_neg1([K[i,j] | i in 1..nt, j in 1..maxfrags]);
 
 % Only one fragment can be executing at a time (VERSAO SMT)
 constraint forall(i in 1..nt) (
              forall(j in 1..nk[i]) (
                forall(bi in i+1..nt) (
                  forall(bj in 1..nk[bi]) (
-                   (T[i] = 0 \/ T[bi] = 0) \/ if K[i,j] > K[bi, bj] then
-                                                K[i,j] >= K[bi, bj] + pk[bi, bj]
-                                              else
-                                                K[bi, bj] >= K[i,j] + pk[i,j]
-                                              endif
+                   K[i,j] >= K[bi, bj] + pk[bi, bj] \/ K[bi, bj] >= K[i,j] + pk[i,j] \/ bool2int(T[i]) + bool2int(T[bi]) < 2
                  )
                )
              )
@@ -75,11 +71,9 @@ constraint forall(i in 1..nt) (
                                 else
                                   T[i] = false
                endif
+               /*T[i] = false \/ (T[dep] = true /\ K[i,1] >= K[dep,nk[dep]] + pk[dep,nk[dep]])*/
              )
            );
-           
-% for d in deps[i]:
-%     If ( T(d) = 1 ; Or ( K(i,0) >= K(d,nk[d]) + pk(d,nk[d]) ; K(i,0) = -1 ) ; K(i,0) = -1 )
 
                
 
