@@ -38,6 +38,7 @@ To install Minizinc:
 ## Requirements
 
 * Python 3 or above
+* File 'proj3_model.mzn' must be on the same directory as 'proj3.py'
 
 
 ## Usage
