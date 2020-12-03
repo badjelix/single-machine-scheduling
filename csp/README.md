@@ -23,10 +23,10 @@ The following constraints were used to encode the problem:
   > T[i] = true -> K[i,j-1] + pk[i,j-1] <= K[i,j]
   
 * Only one fragment can be executing at a time
-  > K[i,j] >= K[bi, bj] + pk[bi, bj] \/ K[bi, bj] >= K[i,j] + pk[i,j] \/ T[i] = false \/ T[bi] = false
+  > K[i,j] >= K[bi, bj] + pk[bi, bj] \\/ K[bi, bj] >= K[i,j] + pk[i,j] \\/ T[i] = false \\/ T[bi] = false
 
 * Task can only start if all its dependencies are done
-  > if T[dep] = true then T[i] = false \/ K[i,1] >= K[dep,nk[dep]] + pk[dep,nk[dep]] else T[i] = false endif
+  > if T[dep] = true then T[i] = false \\/ K[i,1] >= K[dep,nk[dep]] + pk[dep,nk[dep]] else T[i] = false endif
 
 
 ## Installation
