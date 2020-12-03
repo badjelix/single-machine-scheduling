@@ -7,38 +7,33 @@ For the 3nd ALC project we developed a software tool for solving the Single Mach
 
 We defined the following variables:
 
-* #### *T(i)*: task *i* is completed
-* #### *K(i,j)*: timestamp in which fragment *j* of task *i* starts its execution
+* #### *T(i)* (bool): task *i* is completed
+* #### *K(i,j)* (int): timestamp in which fragment *j* of task *i* starts its execution
 
 
 The following constraints were used to encode the problem:
 
-* Task's "flags" can only be assigned to 0 or 1
-  > And(T[i] >= 0, T[i] <= 1)
-
 * Force all fragments of non executed tasks to have a fixed arbitrary value (in this case, r[i])
-  > Or(T[i] == 1, And([K[i][j] == r[i] for j in range(1, nk[i])]))
+  > T[i] = false -> K[i,j] = r[i]
 
 * Fragments can only be executing between their task's release and deadline
-  > Or(T[i] == 0, And(K[i][j] >= r[i], K[i][j] + pk[i][j] <= d[i]))
+  > K[i,j] >= r[i] /\ K[i,j] <= d[i] - pk[i,j]
 
 * Fragments must be processed in order
-  > Or(T[i] == 0, K[i][j-1] + pk[i][j-1] <= K[i][j])
-
+  > T[i] = true -> K[i,j-1] + pk[i,j-1] <= K[i,j]
+  
 * Only one fragment can be executing at a time
-  > Or(Or(T[i1]==0, T[i2]==0), If(K[i1][j1] > K[i2][j2], K[i1][j1] >= K[i2][j2] + pk[i2][j2], K[i2][j2] >= K[i1][j1] + pk[i1][j1]))
+  > K[i,j] >= K[bi, bj] + pk[bi, bj] \/ K[bi, bj] >= K[i,j] + pk[i,j] \/ T[i] = false \/ T[bi] = false
 
 * Task can only start if all its dependencies are done
-  > If(T[dep] == 1, Or(T[i] == 0,  K[i][1] >= K[dep][nk[dep]] + pk[dep][nk[dep]]), T[i] == 0)
+  > if T[dep] = true then T[i] = false \/ K[i,1] >= K[dep,nk[dep]] + pk[dep,nk[dep]] else T[i] = false endif
 
 
 ## Installation
 
-To install Z3-Solver:
+To install Minizinc:
 
-```bash
-pip3 install z3-solver
-```
+[https://www.minizinc.org/doc-2.4.3/en/installation.html](https://www.minizinc.org/doc-2.4.3/en/installation.html)
 
 ## Requirements
 
@@ -48,7 +43,7 @@ pip3 install z3-solver
 ## Usage
 
 ```bash
-python proj2.py < job.sms > solution.txt
+python proj3.py < job.sms > solution.txt
 ```
 Use python3 if your default is python2.
 
