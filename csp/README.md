@@ -1,6 +1,6 @@
-# Single Machine Scheduling - Project 2 (FIXME)
+# Single Machine Scheduling - Project 3
 
-For the 2nd ALC project we developed a software tool for solving the Single Machine Scheduling (JFS) problem using SMT. The solver we used was [Z3-Solver](https://z3prover.github.io/).
+For the 3nd ALC project we developed a software tool for solving the Single Machine Scheduling (JFS) problem using CSP. We used Minizinc to model the constraints and ran the default solver (Gecode 6.3.0).
 
 
 ## Implementation
